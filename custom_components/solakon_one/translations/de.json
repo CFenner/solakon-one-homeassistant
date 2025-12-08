@@ -119,10 +119,10 @@
         "name": "Netzfrequenz"
       },
       "grid_r_voltage": {
-        "name": "Netz Spannung"
+        "name": "Netzspannung"
       },
       "grid_standard_code": {
-        "name": "Netzstandard Code"
+        "name": "Netzstandard"
       },
       "internal_temp": {
         "name": "Interne Temperature"
