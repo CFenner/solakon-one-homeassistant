@@ -67,14 +67,14 @@ class SolakonModbusHub:
         """Set up the Modbus connection."""
         try:
             _LOGGER.info(
-                f"Attempting to connect to Modbus TCP at {self._host}:{self._port}"
+                "Attempting to connect to Modbus TCP at %s:%d", self._host, self._port
             )
 
             # Connect to the device
             await self._client.connect()
 
             if self._client.connected:
-                _LOGGER.info(f"Successfully connected to {self._host}:{self._port}")
+                _LOGGER.info("Successfully connected to %s:%d", self._host, self._port)
 
                 # Test the connection with a simple read
                 # Using device_id parameter like the working script
@@ -86,19 +86,19 @@ class SolakonModbusHub:
                     )
 
                     if test_result.isError():
-                        _LOGGER.warning(f"Test read returned error: {test_result}")
+                        _LOGGER.warning("Test read returned error: %s", test_result)
                     else:
                         _LOGGER.info(
-                            f"Test read successful, device_id={self._device_id}"
+                            "Test read successful, device_id=%d", self._device_id
                         )
                 except Exception as e:
-                    _LOGGER.warning(f"Test read exception: {e}")
+                    _LOGGER.warning("Test read exception: %s", e)
             else:
-                _LOGGER.error(f"Failed to connect to {self._host}:{self._port}")
+                _LOGGER.error("Failed to connect to %s:%d", self._host, self._port)
                 raise ConnectionError(f"Failed to connect to {self._host}:{self._port}")
 
         except Exception as err:
-            _LOGGER.error(f"Connection setup error: {err}")
+            _LOGGER.error("Connection setup error: %s", err)
             raise
 
     async def async_close(self) -> None:
@@ -121,7 +121,10 @@ class SolakonModbusHub:
 
             # Test with device_id parameter (like your working script)
             _LOGGER.debug(
-                f"Testing connection to {self._host}:{self._port} with device_id={self._device_id}"
+                "Testing connection to %s:%d with device_id=%d",
+                self._host,
+                self._port,
+                self._device_id,
             )
 
             result = await self._client.read_holding_registers(
@@ -134,11 +137,11 @@ class SolakonModbusHub:
                 _LOGGER.info("Connection test successful")
                 return True
 
-            _LOGGER.error(f"Connection test failed: {result}")
+            _LOGGER.error("Connection test failed: %s", result)
             return False
 
         except Exception as err:
-            _LOGGER.error(f"Connection test error: {err}")
+            _LOGGER.error("Connection test error: %s", err)
             return False
 
     async def async_get_device_info(self) -> dict[str, Any]:
@@ -171,7 +174,7 @@ class SolakonModbusHub:
                     serial_number = convert_string(serial_result.registers)
 
             except Exception as e:
-                _LOGGER.debug(f"Device info read error: {e}")
+                _LOGGER.debug("Device info read error: %s", e)
 
             return {
                 "manufacturer": DEFAULT_MANUFACTURER,
@@ -181,7 +184,7 @@ class SolakonModbusHub:
             }
 
         except Exception as err:
-            _LOGGER.error(f"Failed to get device info: {err}")
+            _LOGGER.error("Failed to get device info: %s", err)
             return {
                 "manufacturer": DEFAULT_MANUFACTURER,
                 "name": DEFAULT_NAME,
@@ -213,7 +216,10 @@ class SolakonModbusHub:
 
                     if result.isError():
                         _LOGGER.debug(
-                            f"Error reading register {key} at address {config['address']}: {result}"
+                            "Error reading register %s at address %d: %s",
+                            key,
+                            config["address"],
+                            result,
                         )
                         continue
 
@@ -225,7 +231,10 @@ class SolakonModbusHub:
 
                 except Exception as err:
                     _LOGGER.debug(
-                        f"Failed to read register {key} at address {config.get('address', 'unknown')}: {err}"
+                        "Failed to read register %s at address %d: %s",
+                        key,
+                        config.get("address", "unknown"),
+                        err,
                     )
 
         return data
@@ -277,7 +286,7 @@ class SolakonModbusHub:
             return value
 
         except Exception as err:
-            _LOGGER.debug(f"Failed to process register value: {err}")
+            _LOGGER.debug("Failed to process register value: %s", err)
             return None
 
     async def async_write_register(self, address: int, value: int) -> bool:
@@ -295,7 +304,7 @@ class SolakonModbusHub:
                 return not result.isError()
 
             except Exception as err:
-                _LOGGER.error(f"Failed to write register at {address}: {err}")
+                _LOGGER.error("Failed to write register at %d: %s", address, err)
                 return False
 
     async def async_write_registers(self, address: int, values: list[int]) -> bool:
@@ -313,7 +322,7 @@ class SolakonModbusHub:
                 return not result.isError()
 
             except Exception as err:
-                _LOGGER.error(f"Failed to write registers at {address}: {err}")
+                _LOGGER.error("Failed to write registers at %d: %s", address, err)
                 return False
 
 
