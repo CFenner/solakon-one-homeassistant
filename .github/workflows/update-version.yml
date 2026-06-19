@@ -11,10 +11,10 @@ jobs:
   update-version:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: ⤵️ Checkout repository
         uses: actions/checkout@v4
 
-      - name: Get latest draft release version
+      - name: 🔍 Get latest draft release version
         id: draft_release
         uses: actions/github-script@v7
         with:
@@ -36,30 +36,30 @@ jobs:
             core.setOutput('version', version);
             console.log(`Found draft release version: ${version}`);
 
-      - name: Set up Python
+      - name: 🏗 Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
 
-      - name: Install uv
+      - name: 🏗 Install uv
         run: |
           pip install uv
 
-      - name: Update pyproject.toml
+      - name: ✏️ Update pyproject.toml
         run: |
           # Update the version field in pyproject.toml
           sed -i 's/^version = .*/version = "${{ steps.draft_release.outputs.version }}"/' pyproject.toml
 
-      - name: Update manifest.json
+      - name: ✏️ Update manifest.json
         run: |
           # Update the version field in manifest.json
           sed -i 's/"version": "[^"]*"/"version": "${{ steps.draft_release.outputs.version }}"/' custom_components/solakon_one/manifest.json
 
-      - name: Regenerate uv.lock
+      - name: 🚀 Regenerate uv.lock
         run: |
           uv lock
 
-      - name: Create Pull Request
+      - name: 📝 Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
           commit-message: "chore: update version to ${{ steps.draft_release.outputs.version }}"
